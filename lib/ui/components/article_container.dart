@@ -26,6 +26,27 @@ class _ArticleContainerState extends ConsumerState<ArticleContainer> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: Image.network(
+              widget.articleModel.urlToImage,
+              height: 25.h,
+              width: 100.w,
+              errorBuilder: (context, error, stackTrace) => SizedBox(),
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) {
+                  return child;
+                }
+                return SizedBox(
+                    height: 25.h,
+                    width: 100.w,
+                    child: Center(child: CircularProgressIndicator()));
+              },
+            ),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
           Row(
             children: [
               SizedBox(
