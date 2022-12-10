@@ -13,6 +13,17 @@ class FromToDateDialog extends ConsumerStatefulWidget {
 class _FromToDialogState extends ConsumerState<FromToDateDialog> {
   DateTime toDate = DateTime.now();
   DateTime? fromDate;
+
+  @override
+  void initState() {
+    super.initState();
+    final dates = ref.read(dateFilterProvider);
+    if (dates.isNotEmpty) {
+      fromDate = dates.first;
+      toDate = dates.last;
+    }
+  }
+
   @override
   Widget build(
     BuildContext context,

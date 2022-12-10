@@ -10,28 +10,24 @@ import '../../utils.dart';
 class ArticleProvider extends StateNotifier<AsyncValue<List<ArticleModel>>> {
   ArticleProvider(super.state);
 
-  getSearchResults(
-    String query, {
-    List<String>? domains,
-    DateTime? fromDate,
-    DateTime? toDate,
-  }) async {
+  getSearchResults(String query,
+      {List<String>? domains,
+      DateTime? fromDate,
+      DateTime? toDate,
+      String? category}) async {
     state = const AsyncLoading();
-    state =
-        AsyncValue.data(await _getSearchData(query, domains, fromDate, toDate));
+    state = AsyncValue.data(
+        await _getSearchData(query, domains, fromDate, toDate, category));
   }
 
-  _getSearchData(
-    String query,
-    List<String>? domains,
-    DateTime? fromDate,
-    DateTime? toDate,
-  ) async {
-    final uri = Uri.https(Utils.baseUrl, '/v2/everything', {
+  _getSearchData(String query, List<String>? domains, DateTime? fromDate,
+      DateTime? toDate, String? category) async {
+    final uri = Uri.https(Utils.baseUrl, Utils.currentEndPoint, {
       'to': toDate?.toIso8601String(),
       'from': fromDate?.toIso8601String(),
       'domains': domains?.toString(),
       'q': query,
+      'category': category,
       'apiKey': 'cbc5feef5d1f4112ac8d99d7b4f405fd'
     });
     log(uri.toString());

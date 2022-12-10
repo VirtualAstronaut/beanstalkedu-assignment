@@ -5,10 +5,12 @@ class RoundTextField extends ConsumerWidget {
   const RoundTextField({
     super.key,
     required this.controller,
+    required this.labelText,
     required this.onChanged,
   });
+  final String labelText;
   final TextEditingController controller;
-  final void Function(String)? onChanged;
+  final void Function(String value)? onChanged;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -17,7 +19,7 @@ class RoundTextField extends ConsumerWidget {
       onChanged: onChanged,
       decoration: InputDecoration(
           floatingLabelBehavior: FloatingLabelBehavior.never,
-          labelText: 'Search Everything',
+          labelText: labelText,
           prefixIcon: Icon(Icons.search, color: colorScheme.onPrimaryContainer),
           labelStyle: const TextStyle(),
           fillColor: colorScheme.primaryContainer,

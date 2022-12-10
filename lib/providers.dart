@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:beanstalkedu_assignment/core/providers/article_provider.dart';
+import 'package:beanstalkedu_assignment/core/providers/source_provider.dart';
 import 'package:beanstalkedu_assignment/model/article_model.dart';
+import 'package:beanstalkedu_assignment/model/source_model.dart';
 import 'package:beanstalkedu_assignment/utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -13,6 +15,9 @@ final articleNotifierProvider =
   (ref) {
     return ArticleProvider(const AsyncData([]));
   },
+);
+final selectedCategoriesProvider = StateProvider<String>(
+  (ref) => '',
 );
 
 final dateFilterProvider = StateProvider<List<DateTime>>((ref) => []);
