@@ -21,7 +21,7 @@ class Utils {
     }
   }
 
-  static String currentEndPoint = '/v2/top-headlines';
+  static String currentEndPoint = everythingEndpoint;
   static String everythingEndpoint = '/v2/everything';
   static String topHeadlinesEndPoint = '/v2/top-headlines';
   static String sourcesEndpoint = '/v2/top-headlines/sources';

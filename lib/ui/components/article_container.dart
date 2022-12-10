@@ -1,9 +1,11 @@
 import 'package:beanstalkedu_assignment/model/article_model.dart';
+import 'package:beanstalkedu_assignment/ui/article_view_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../utils.dart';
 
@@ -23,9 +25,11 @@ class _ArticleContainerState extends ConsumerState<ArticleContainer> {
     final colorScheme = Theme.of(context).colorScheme;
     return GestureDetector(
       onTap: () async {
-        if (await canLaunchUrlString(widget.articleModel.url)) {
-          launchUrlString(widget.articleModel.url);
-        }
+        Navigator.push(context, MaterialPageRoute(
+          builder: (context) {
+            return ArticleViewScreen(articleModel: widget.articleModel);
+          },
+        ));
       },
       child: Container(
         decoration: BoxDecoration(
