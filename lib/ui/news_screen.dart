@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:beanstalkedu_assignment/providers.dart';
-import 'package:beanstalkedu_assignment/ui/article_container.dart';
+import 'package:beanstalkedu_assignment/ui/components/article_container.dart';
+import 'package:beanstalkedu_assignment/ui/components/round_textfield.dart';
+import 'package:beanstalkedu_assignment/ui/date_picker_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -34,36 +36,24 @@ class _NewsScreenState extends ConsumerState<NewsScreen> {
         backgroundColor: colorScheme.background,
         appBar: AppBar(
           title: SizedBox(
-            height: 50,
-            width: 80.w,
-            child: TextFormField(
-              controller: searchController,
-              onChanged: (value) {
-                if (value.isEmpty) {
-                  return;
-                }
-                if (timer?.isActive ?? false) timer?.cancel();
-                timer =
-                    Timer.periodic(const Duration(milliseconds: 500), (timer) {
-                  ref
-                      .watch(articleNotifierProvider.notifier)
-                      .getSearchResults(value);
-                  timer.cancel();
-                });
-              },
-              decoration: InputDecoration(
-                  floatingLabelBehavior: FloatingLabelBehavior.never,
-                  labelText: 'Search Everything',
-                  prefixIcon:
-                      Icon(Icons.search, color: colorScheme.onPrimaryContainer),
-                  labelStyle: const TextStyle(),
-                  fillColor: colorScheme.primaryContainer,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 5),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: const BorderSide())),
-            ),
-          ),
+              height: 50,
+              width: 80.w,
+              child: RoundTextField(
+                controller: searchController,
+                onChanged: (value) {
+                  if (value.isEmpty) {
+                    return;
+                  }
+                  if (timer?.isActive ?? false) timer?.cancel();
+                  timer = Timer.periodic(const Duration(milliseconds: 500),
+                      (timer) {
+                    ref
+                        .watch(articleNotifierProvider.notifier)
+                        .getSearchResults(value);
+                    timer.cancel();
+                  });
+                },
+              )),
           bottom: PreferredSize(
               preferredSize: Size(100.w, kToolbarHeight),
               child: Row(
@@ -73,10 +63,20 @@ class _NewsScreenState extends ConsumerState<NewsScreen> {
                       onPressed: () {},
                       icon: Icon(Icons.filter_alt_outlined,
                           color: colorScheme.onPrimaryContainer)),
-                  IconButton(
-                      onPressed: () {},
-                      icon: Icon(Icons.date_range,
-                          color: colorScheme.onPrimaryContainer))
+                  Container(
+                    decoration: BoxDecoration(
+                        color: ref.watch(dateFilterProvider).isEmpty
+                            ? null
+                            : colorScheme.primaryContainer,
+                        shape: BoxShape.circle),
+                    child: IconButton(
+                        onPressed: dateFilterCallback,
+                        icon: Icon(
+                            ref.watch(dateFilterProvider).isEmpty
+                                ? Icons.date_range_outlined
+                                : Icons.date_range_rounded,
+                            color: colorScheme.onPrimaryContainer)),
+                  )
                 ],
               )),
         ),
@@ -98,5 +98,20 @@ class _NewsScreenState extends ConsumerState<NewsScreen> {
             );
           },
         ));
+  }
+
+  void dateFilterCallback() async {
+    final didChoiceChange = await showDialog(
+        context: context,
+        builder: (context) {
+          return const FromToDateDialog();
+        });
+    if (didChoiceChange != null && didChoiceChange) {
+      final fromToDates = ref.read(dateFilterProvider);
+      ref.read(articleNotifierProvider.notifier).getSearchResults(
+          searchController.text,
+          fromDate: fromToDates.isNotEmpty ? fromToDates.first : null,
+          toDate: fromToDates.isNotEmpty ? fromToDates.last : null);
+    }
   }
 }

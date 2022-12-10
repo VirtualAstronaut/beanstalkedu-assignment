@@ -14,3 +14,5 @@ final articleNotifierProvider =
     return ArticleProvider(const AsyncData([]));
   },
 );
+
+final dateFilterProvider = StateProvider<List<DateTime>>((ref) => []);
