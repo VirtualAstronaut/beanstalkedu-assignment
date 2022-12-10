@@ -5,6 +5,7 @@ import 'package:beanstalkedu_assignment/ui/components/article_container.dart';
 import 'package:beanstalkedu_assignment/ui/components/round_textfield.dart';
 import 'package:beanstalkedu_assignment/ui/date_picker_dialog.dart';
 import 'package:beanstalkedu_assignment/ui/category_filter_dialog.dart';
+import 'package:beanstalkedu_assignment/ui/save_api_key_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sizer/sizer.dart';
@@ -89,6 +90,7 @@ class _NewsScreenState extends ConsumerState<NewsScreen> {
                         } else {
                           Utils.currentEndPoint = Utils.everythingEndpoint;
                         }
+                        getData();
                         setState(() {});
                       },
                       child: Text(
@@ -97,26 +99,40 @@ class _NewsScreenState extends ConsumerState<NewsScreen> {
                               : 'Headlines'))
                 ],
               )),
-          actions: [IconButton(onPressed: () {}, icon: Icon(Icons.more_vert))],
+          actions: [
+            IconButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return const SaveAPIKeyDialog();
+                    },
+                  );
+                  setState(() {});
+                },
+                icon: Icon(Icons.more_vert))
+          ],
         ),
-        body: articleProvider.whenOrNull(
-          loading: () {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          },
-          error: (error, stackTrace) {
-            return Container();
-          },
-          data: (data) {
-            return ListView.builder(
-              itemCount: data.length,
-              itemBuilder: (context, index) {
-                return ArticleContainer(articleModel: data[index]);
-              },
-            );
-          },
-        ));
+        body: Utils.apiKey.isEmpty
+            ? Center(child: const Text('Please Add API Key From 3 Dot Menu'))
+            : articleProvider.whenOrNull(
+                loading: () {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                },
+                error: (error, stackTrace) {
+                  return Container();
+                },
+                data: (data) {
+                  return ListView.builder(
+                    itemCount: data.length,
+                    itemBuilder: (context, index) {
+                      return ArticleContainer(articleModel: data[index]);
+                    },
+                  );
+                },
+              ));
   }
 
   void dateFilterCallback() async {

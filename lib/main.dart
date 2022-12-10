@@ -7,7 +7,8 @@ import 'package:sizer/sizer.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  Utils.initializeHive();
+  Utils.initializeHiveAndKey();
+
   runApp(const MyApp());
 }
 
