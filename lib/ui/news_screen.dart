@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:beanstalkedu_assignment/providers.dart';
 import 'package:beanstalkedu_assignment/ui/components/article_container.dart';
@@ -7,10 +6,10 @@ import 'package:beanstalkedu_assignment/ui/components/round_textfield.dart';
 import 'package:beanstalkedu_assignment/ui/date_picker_dialog.dart';
 import 'package:beanstalkedu_assignment/ui/category_filter_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart';
 import 'package:sizer/sizer.dart';
+
+import '../utils.dart';
 
 class NewsScreen extends ConsumerStatefulWidget {
   const NewsScreen({super.key});
@@ -41,7 +40,8 @@ class _NewsScreenState extends ConsumerState<NewsScreen> {
               height: 50,
               width: 80.w,
               child: RoundTextField(
-                labelText: 'Search EveryThing',
+                labelText:
+                    'Search ${Utils.currentEndPoint == Utils.everythingEndpoint ? 'Everything' : 'Headlines'}',
                 controller: searchController,
                 onChanged: (value) {
                   if (value.isEmpty) {
@@ -58,35 +58,46 @@ class _NewsScreenState extends ConsumerState<NewsScreen> {
           bottom: PreferredSize(
               preferredSize: Size(100.w, kToolbarHeight),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Container(
-                    decoration: BoxDecoration(
-                        color: ref.watch(selectedCategoriesProvider).isEmpty
+                  IconButton(
+                      onPressed: categorySelectCallback,
+                      style: IconButton.styleFrom(
+                        backgroundColor:
+                            ref.watch(selectedCategoriesProvider).isEmpty
+                                ? null
+                                : colorScheme.primaryContainer,
+                      ),
+                      icon: Icon(Icons.filter_alt_outlined,
+                          color: colorScheme.onPrimaryContainer)),
+                  IconButton(
+                      style: IconButton.styleFrom(
+                        backgroundColor: ref.watch(dateFilterProvider).isEmpty
                             ? null
                             : colorScheme.primaryContainer,
-                        shape: BoxShape.circle),
-                    child: IconButton(
-                        onPressed: categorySelectCallback,
-                        icon: Icon(Icons.filter_alt_outlined,
-                            color: colorScheme.onPrimaryContainer)),
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                        color: ref.watch(dateFilterProvider).isEmpty
-                            ? null
-                            : colorScheme.primaryContainer,
-                        shape: BoxShape.circle),
-                    child: IconButton(
-                        onPressed: dateFilterCallback,
-                        icon: Icon(
-                            ref.watch(dateFilterProvider).isEmpty
-                                ? Icons.date_range_outlined
-                                : Icons.date_range_rounded,
-                            color: colorScheme.onPrimaryContainer)),
-                  )
+                      ),
+                      onPressed: dateFilterCallback,
+                      icon: Icon(
+                          ref.watch(dateFilterProvider).isEmpty
+                              ? Icons.date_range_outlined
+                              : Icons.date_range_rounded,
+                          color: colorScheme.onPrimaryContainer)),
+                  TextButton(
+                      onPressed: () {
+                        if (Utils.currentEndPoint == Utils.everythingEndpoint) {
+                          Utils.currentEndPoint = Utils.topHeadlinesEndPoint;
+                        } else {
+                          Utils.currentEndPoint = Utils.everythingEndpoint;
+                        }
+                        setState(() {});
+                      },
+                      child: Text(
+                          Utils.currentEndPoint == Utils.everythingEndpoint
+                              ? 'Everything'
+                              : 'Headlines'))
                 ],
               )),
+          actions: [IconButton(onPressed: () {}, icon: Icon(Icons.more_vert))],
         ),
         body: articleProvider.whenOrNull(
           loading: () {
