@@ -1,6 +1,8 @@
+import 'package:beanstalkedu_assignment/providers.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
@@ -16,9 +18,6 @@ class Utils {
     Hive.init((await getApplicationDocumentsDirectory()).path);
     Hive.registerAdapter(ArticleModelAdapter());
     box = await Hive.openBox('myBox');
-    if (await Utils.flutterSecureStorage.containsKey(key: 'apiKey')) {
-      apiKey = (await flutterSecureStorage.read(key: 'apiKey'))!;
-    }
   }
 
   static String currentEndPoint = everythingEndpoint;

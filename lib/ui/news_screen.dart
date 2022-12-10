@@ -26,6 +26,14 @@ class _NewsScreenState extends ConsumerState<NewsScreen> {
   @override
   void initState() {
     super.initState();
+    setupKey();
+  }
+
+  void setupKey() async {
+    if (await Utils.flutterSecureStorage.containsKey(key: 'apiKey')) {
+      ref.read(apiKeyProvider.notifier).state =
+          (await Utils.flutterSecureStorage.read(key: 'apiKey'))!;
+    }
   }
 
   Timer? timer;
@@ -113,8 +121,8 @@ class _NewsScreenState extends ConsumerState<NewsScreen> {
                 icon: Icon(Icons.more_vert))
           ],
         ),
-        body: Utils.apiKey.isEmpty
-            ? Center(child: const Text('Please Add API Key From 3 Dot Menu'))
+        body: ref.watch(apiKeyProvider).isEmpty
+            ? const Center(child: Text('Please Add API Key From 3 Dot Menu'))
             : articleProvider.whenOrNull(
                 loading: () {
                   return const Center(

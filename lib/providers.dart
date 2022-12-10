@@ -13,5 +13,7 @@ final articleNotifierProvider =
 final selectedCategoriesProvider = StateProvider<String>(
   (ref) => '',
 );
-
+final apiKeyProvider = StateProvider(
+  (ref) => '',
+);
 final dateFilterProvider = StateProvider<List<DateTime>>((ref) => []);

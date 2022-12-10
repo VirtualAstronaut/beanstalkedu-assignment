@@ -1,3 +1,4 @@
+import 'package:beanstalkedu_assignment/providers.dart';
 import 'package:beanstalkedu_assignment/ui/components/round_textfield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +33,7 @@ class _SaveAPIKeyDialogState extends ConsumerState<SaveAPIKeyDialog> {
             onPressed: () async {
               await Utils.flutterSecureStorage
                   .write(key: 'apiKey', value: apiKeyController.text);
-              Utils.apiKey = apiKeyController.text;
+              ref.read(apiKeyProvider.notifier).state = apiKeyController.text;
               Navigator.pop(context, true);
             },
             child: const Text('OK')),
